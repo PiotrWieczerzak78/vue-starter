@@ -1,29 +1,43 @@
 <template>
   <div>
-    <h1>Twój email to : {{email}}</h1>
-    <input type="email" v-model="email">
-    <p>Długość : {{email.length}}</p>
-    <div v-if="email.length < 10">Ale masz krótki adres!</div>
-    <div v-else-if="email.length < 15">Twój adres e-mail jest w sam raz.</div>
-    <div v-else class="zadlugi">Twój adres e-mail jest stanowczo za długi.</div>
+    <h1>Witaj w systemie zapisów zajęcia</h1>
+    <p>Długość : {{ authenticatedUsername.length }}</p>
+    <div v-if="!authenticatedUsername ">
+      <login-form @login="logMeIn($event)" button-label="Wejdź"></login-form>
+    </div>
+    <div v-else >
+      <loged-in-form @logout="logOut()" :email="authenticatedUsername"></loged-in-form>
+      <ol>
+        <li v-for="meeting in meetings" :key="meeting.id">{{ meeting }}</li>
+      </ol>
+    </div>
+
   </div>
 </template>
 
 <script>
-
+import "milligram";
+import LoginForm from "./LoginForm";
+import LogedInForm from "@/LogedInForm";
 export default {
+  components: {LogedInForm, LoginForm},
   data() {
     return {
-      email: '',
-      password: ''
+      authenticatedUsername: '',
+      meetings : ['A', 'B','C'],
     };
+  },
+  methods: {
+    logMeIn(username) {
+      this.authenticatedUsername = username;
+    },
+    logOut() {
+      this.authenticatedUsername = '';
+    }
   }
-
 }
 </script>
 
 <style>
-.zadlugi{
-  color: red;
-}
+
 </style>
